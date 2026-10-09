@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>はなだガチャツール</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="header">
+  <div class="header-top">
+    <h1 class="title">はなだガチャツール</h1>
+  </div>
+  <nav class="menu-bar" id="menuPanel" aria-label="ページ切り替え">
+    <div class="menu-bar-inner">
+      <button type="button" class="menu-item active" data-tab="input" aria-current="page">入力ページ</button>
+      <button type="button" class="menu-item" data-tab="gacha">ガチャページ</button>
+    </div>
+  </nav>
+</header>
+
+<main class="container">
+<div class="track" id="track">
+  <section id="page-input" class="page active">
+    <p class="note">1行に1つずつ入力してください（コピペ一括入力OK）。入力内容は自動保存されます。<br>
+      ショートカット: 行内で <kbd>1</kbd>=UR / <kbd>2</kbd>=SSR / <kbd>3</kbd>=SR / <kbd>4</kbd>=R / <kbd>5</kbd>=N を押すとその行の先頭に付与し、次の行へ移動します。</p>
+    <div class="cards">
+      <div class="card">
+        <h2>通常枠 <small>重複あり・何度でも出る</small></h2>
+        <textarea id="normalText" spellcheck="false" placeholder="例：&#10;SSR 店長&#10;R 見習い"></textarea>
+        <div class="count"><span id="normalCount">0</span> 件</div>
+      </div>
+      <div class="card">
+        <h2>特別枠 <small>重複なし・出たら暗転</small></h2>
+        <textarea id="specialText" spellcheck="false" placeholder="例：&#10;UR 社長&#10;SR 部長"></textarea>
+        <div class="count"><span id="specialCount">0</span> 件</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="page-gacha" class="page">
+    <div class="actions">
+      <button class="btn" id="drawBtn">引く</button>
+      <button class="btn btn-sub" id="resetBtn">リセット</button>
+    </div>
+    <p class="status" id="status"></p>
+
+    <div class="card">
+      <h2>結果</h2>
+      <ul class="results" id="results"><li class="empty">まだ引いていません</li></ul>
+    </div>
+
+    <div class="card">
+      <h2>特別枠一覧 <small id="specialSummary"></small></h2>
+      <p class="hint">暗転したセルをクリックすると復活します。</p>
+      <div class="grid" id="specialGrid"></div>
+    </div>
+
+    <div class="card">
+      <h2>通常枠一覧 <small id="normalSummary"></small></h2>
+      <div class="grid" id="normalGrid"></div>
+    </div>
+  </section>
+</div>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
