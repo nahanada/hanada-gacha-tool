@@ -18,7 +18,7 @@ body { margin: 0; font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo,
 
 .container { overflow: hidden; }
 .track { display: flex; align-items: flex-start; transition: transform .35s ease; }
-.track.at-gacha { transform: translateX(-100%); }
+.track { transform: translateX(calc(var(--page, 0) * -100%)); }
 .page { flex: 0 0 100%; min-width: 0; padding: 16px max(16px, calc((100% - 1400px) / 2)); }
 .page:not(.active):not(.sliding) { height: 0; overflow: hidden; padding-top: 0; padding-bottom: 0; }
 .note { font-size: .85rem; color: #555; margin: 0 0 12px; }
@@ -64,3 +64,15 @@ button.cell.drawn:hover { background: #666; opacity: .8; }
 .grid-head small { color: #777; font-weight: normal; margin-left: 8px; }
 
 @media (max-width: 560px) { .btn-sub { position: static; } }
+
+.history { list-style: none; margin: 0; padding: 0; }
+.history li { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 8px 6px; border-bottom: 1px solid var(--border); }
+.history li:last-child { border-bottom: none; }
+.history .h-name { font-size: 1.05rem; }
+.history .h-name.special { color: var(--main); font-weight: bold; }
+.history time { font-size: .72rem; color: #888; white-space: nowrap; }
+.history .empty { color: #888; justify-content: center; }
+.history-actions { text-align: center; margin-top: 12px; }
+.btn-small { min-width: 120px; padding: 6px 14px; font-size: 1rem; border-radius: 12px; }
+
+@media (max-width: 600px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

@@ -6,6 +6,7 @@
     special: 'hanada-gacha:special',
     drawn: 'hanada-gacha:drawn',
     tab: 'hanada-gacha:tab',
+    history: 'hanada-gacha:history',
   };
   const RARITY = { '1': 'UR ', '2': 'SSR ', '3': 'SR ', '4': 'R ', '5': 'N ' };
   const RARITY_RE = /^(UR|SSR|SR|R|N) /;
@@ -26,9 +27,13 @@
   };
   const normalItems = () => parse(normalText.value, false);
   const specialItems = () => parse(specialText.value, true);
+  let history = [];
+  try { history = JSON.parse(load(KEYS.history, '[]')); if (!Array.isArray(history)) history = []; } catch { history = []; }
+  const saveHistory = () => save(KEYS.history, JSON.stringify(history));
   const saveDrawn = () => save(KEYS.drawn, JSON.stringify([...drawn]));
 
   /* ---------- tabs ---------- */
+  const TABS = ['input', 'gacha', 'history'];
   let slideTimer;
   function showTab(name) {
     document.querySelectorAll('.menu-item').forEach((t) => {
@@ -38,11 +43,12 @@
     const pages = document.querySelectorAll('.page');
     pages.forEach((p) => p.classList.add('sliding'));
     pages.forEach((p) => p.classList.toggle('active', p.id === 'page-' + name));
-    $('track').classList.toggle('at-gacha', name === 'gacha');
+    $('track').style.setProperty('--page', TABS.indexOf(name));
     clearTimeout(slideTimer);
     slideTimer = setTimeout(() => pages.forEach((p) => p.classList.remove('sliding')), 400);
     save(KEYS.tab, name);
     if (name === 'gacha') renderGacha();
+    if (name === 'history') renderHistory();
   }
   document.querySelectorAll('.menu-item').forEach((t) => t.addEventListener('click', () => showTab(t.dataset.tab)));
 
@@ -151,6 +157,34 @@
       (name) => cell('div', name, 'plain'), (g) => `${g.length} 件`);
   }
 
+  const pad = (n) => String(n).padStart(2, '0');
+  const fmt = (t) => {
+    const d = new Date(t);
+    return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  };
+
+  function renderHistory() {
+    const ul = $('historyList');
+    ul.textContent = '';
+    if (!history.length) {
+      const li = document.createElement('li');
+      li.className = 'empty';
+      li.textContent = 'まだ履歴がありません';
+      ul.appendChild(li);
+      return;
+    }
+    history.forEach((h) => {
+      const li = document.createElement('li');
+      const name = document.createElement('span');
+      name.className = 'h-name' + (h.special ? ' special' : '');
+      name.textContent = h.name;
+      const time = document.createElement('time');
+      time.textContent = fmt(h.t);
+      li.append(name, time);
+      ul.appendChild(li);
+    });
+  }
+
   function draw(times) {
     const normals = normalItems();
     const specials = specialItems();
@@ -163,6 +197,9 @@
       if (pick.special) drawn.add(pick.name);
       results.push(pick);
     }
+    const now = Date.now();
+    results.forEach((r) => history.unshift({ name: r.name, special: r.special, t: now }));
+    saveHistory();
     saveDrawn();
     $('status').textContent = results.length === 0
       ? '抽選対象がありません。入力ページでデータを追加するか、リセットしてください。'
@@ -194,5 +231,12 @@
   specialText.value = load(KEYS.special, '');
   updateCounts();
   setTimeout(() => document.querySelector('.header').classList.add('menu-open'), 50);
-  showTab(load(KEYS.tab, 'input') === 'gacha' ? 'gacha' : 'input');
+  $('clearHistoryBtn').addEventListener('click', () => {
+    if (!history.length) return;
+    history = [];
+    saveHistory();
+    renderHistory();
+  });
+  const savedTab = load(KEYS.tab, 'input');
+  showTab(TABS.includes(savedTab) ? savedTab : 'input');
 })();

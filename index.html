@@ -15,6 +15,7 @@
     <div class="menu-bar-inner">
       <button type="button" class="menu-item active" data-tab="input" aria-current="page">入力ページ</button>
       <button type="button" class="menu-item" data-tab="gacha">ガチャページ</button>
+      <button type="button" class="menu-item" data-tab="history">履歴</button>
     </div>
   </nav>
 </header>
@@ -59,6 +60,14 @@
     <div class="card">
       <h2>通常枠一覧 <small id="normalSummary"></small></h2>
       <div class="grid" id="normalGrid"></div>
+    </div>
+  </section>
+
+  <section id="page-history" class="page">
+    <div class="card">
+      <h2>履歴 <small>新しい順</small></h2>
+      <ol class="history" id="historyList"></ol>
+      <div class="history-actions"><button type="button" class="btn btn-small" id="clearHistoryBtn">履歴を消去</button></div>
     </div>
   </section>
 </div>
